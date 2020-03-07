@@ -71,6 +71,7 @@ class Polynomial:
         return "Coefficients :{}".format(self.coeff)
 
     # The function differentiate returns a Polynomial object which represents the derivative of the original function.
+    
     def differentiate(self):
         diff_coeff = []
         for i in range(self.degree + 1):
@@ -83,12 +84,14 @@ class Polynomial:
 
         return Polynomial(diff_pol)
 
-    # The function nr performs the Newton Raphson method approach to find turning points of a given polynomial  
-    # This is more accurate than tpsolve
+    # The function nr performs the Newton-Raphson (NR) method to find roots of a given polynomial.
+    # To find turning points of a polynomial e.g. pol1: print(pol1.differentiate().nr(no_of_iterations))
+    # This is more accurate than tpsolve!!
+    
     def nr(self, iterations):
         # NR negative side search
         y = self.differentiate()
-        init_val = -99999999  # NR initial value. also known as x nought
+        init_val = -99999999  # NR initial value. also referred to as x nought
         return_val = 0
 
         for iteration in range(1,iterations + 1):
@@ -128,7 +131,7 @@ class Polynomial:
 
     # Action point: Build tpsolve without for loops to increase efficiency. use map
 
-    # tpsolve is not efficient and was developed as an alternative approach to Newton Raphson.
+    # tpsolve is not efficient and was initially developed as an alternative approach to Newton Raphson.
     # tpsolve takes into account change of sign method and tries to find these roots with sufficient accuracy. 
     # Not as accuarte as NR!
     
@@ -141,7 +144,7 @@ class Polynomial:
             root = (-x.coeff[0])/x.coeff[1]
             return "Turning Point at:",root
         else:
-            j = 0
+            j = 0 # j represents root here.
             sol = []
             lf = 0.0001  # lf optimization current: 0.0001 # j,3 10M 
             for val in range(-1000000, 1000000):  #(-10000000, 10000000)
@@ -154,8 +157,9 @@ class Polynomial:
 # create a function that finds sign change over large intervals but does not miss any roots. NR??
             cleanup = [] 
 
+            # helps find and remove values that might be very close together (essentially the same root)
             for item in range(1,len(sol)):
-                if round((sol[item] - sol[item - 1]),2) == 0: # helps find values that might be very close together (essentially the same root)
+                if round((sol[item] - sol[item - 1]),2) == 0: 
                     cleanup.append(item)
 
             cleanup.reverse()
