@@ -1,6 +1,10 @@
-# Polynomial Project.
+# Polynomial Project
 
-# Start with the constant term followed by terms of higher order. Place zeros for any term that is not in use.
+# Aim: to allow users to calculate the derivative and turning points given the coefficients of a polynomial
+
+# To define a new polynomial object e.g. pol1:
+# Start with the constant term followed by terms of higher order. Place zeroes for any term that is not in use.
+# pol1 = Polynomial([1,2,3,4]) defines a new polynomial: 1 + 2x + 3x^2 + 4x^3
 
 
 class Polynomial:
@@ -66,6 +70,7 @@ class Polynomial:
     def __repr__(self):
         return "Coefficients :{}".format(self.coeff)
 
+    # The function differentiate returns a Polynomial object which represents the derivative of the original function.
     def differentiate(self):
         diff_coeff = []
         for i in range(self.degree + 1):
@@ -78,25 +83,28 @@ class Polynomial:
 
         return Polynomial(diff_pol)
 
+    # The function nr performs the Newton Raphson method approach to find turning points of a given polynomial  
+    # This is more accurate than tpsolve
     def nr(self, iterations):
-
+        # NR negative side search
         y = self.differentiate()
-        init_val = -99999999
+        init_val = -99999999  # NR initial value. also known as x nought
         return_val = 0
 
         for iteration in range(1,iterations + 1):
             fx = 0
             fdx = 0
             for val in range(self.degree):
-                fdx = fdx + (y.coeff[val] * (init_val ** val))
+                fdx = fdx + (y.coeff[val] * (init_val ** val))  # Derivative evaluated at init_val 
 
             for value in range(self.degree + 1):
-                fx = fx + (self.coeff[value] * (init_val ** value))
+                fx = fx + (self.coeff[value] * (init_val ** value)) # function evaluated at init_val
 
             d = init_val - (fx / fdx)  # value of Newton-Raphson iteration
             init_val = d
             return_val = round(d, 5)
 
+        # NR positive side search
         init_val2 = 99999999
         return_val2 = 0
 
@@ -118,12 +126,12 @@ class Polynomial:
         else:
             return "tps are:", return_val, return_val2
 
-    # Build tpsolve without for loops to increase efficiency. use map reduce filter
-    # 1 list for coeff, 1 for
+    # Action point: Build tpsolve without for loops to increase efficiency. use map
 
-
-
-
+    # tpsolve is not efficient and was developed as an alternative approach to Newton Raphson.
+    # tpsolve takes into account change of sign method and tries to find these roots with sufficient accuracy. 
+    # Not as accuarte as NR!
+    
     def tpsolve(self):
         x = self.differentiate()
 
@@ -135,18 +143,19 @@ class Polynomial:
         else:
             j = 0
             sol = []
-            lf = 0.0001  # lf optimization current: 0.0001 # j,3 10M
+            lf = 0.0001  # lf optimization current: 0.0001 # j,3 10M 
             for val in range(-1000000, 1000000):  #(-10000000, 10000000)
                 for i in range(self.degree):
                     j = j + (x.coeff[i]*((lf*val) ** i))
                 if round(j,3) == 0:
                     sol.append(val*lf)
                 j = 0
-    # create a function that finds sign change over large intervals but does not miss any roots. NR??
-            cleanup = []
+   
+# create a function that finds sign change over large intervals but does not miss any roots. NR??
+            cleanup = [] 
 
             for item in range(1,len(sol)):
-                if round((sol[item] - sol[item - 1]),2) == 0:
+                if round((sol[item] - sol[item - 1]),2) == 0: # helps find values that might be very close together (essentially the same root)
                     cleanup.append(item)
 
             cleanup.reverse()
@@ -164,8 +173,6 @@ pol5 = Polynomial([-1,1,-1,0,0,0,0,0,0,1,0,1])
 pol6 = Polynomial([1,4,-5,9,6,23,14,5,6,1,1,10,1])
 print(pol1 + pol2)
 
-#print(pol2.differentiate())
-
 print("with NR method")
 print(pol1.differentiate().nr(100))
 print(pol2.differentiate().nr(100))
@@ -179,6 +186,3 @@ print(pol2.tpsolve())
 print(pol3.tpsolve())
 print(pol4.tpsolve())
 print(pol5.tpsolve())
-
-# RRE?
-
